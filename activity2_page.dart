@@ -49,16 +49,20 @@ class _Activity2PageState extends State<Activity2Page> {
             List<List<int>> moves = [];
             
             // Check all possible moves
-            if (dog['row']! > 0 && maze[dog['row']! - 1][dog['col']!] != WALL)
+            if (dog['row']! > 0 && maze[dog['row']! - 1][dog['col']!] != WALL) {
               moves.add([-1, 0]);
+            }
             if (dog['row']! < maze.length - 1 &&
-                maze[dog['row']! + 1][dog['col']!] != WALL)
+                maze[dog['row']! + 1][dog['col']!] != WALL) {
               moves.add([1, 0]);
-            if (dog['col']! > 0 && maze[dog['row']!][dog['col']! - 1] != WALL)
+            }
+            if (dog['col']! > 0 && maze[dog['row']!][dog['col']! - 1] != WALL) {
               moves.add([0, -1]);
+            }
             if (dog['col']! < maze[0].length - 1 &&
-                maze[dog['row']!][dog['col']! + 1] != WALL)
+                maze[dog['row']!][dog['col']! + 1] != WALL) {
               moves.add([0, 1]);
+            }
 
             if (moves.isNotEmpty) {
               var move = moves[random.nextInt(moves.length)];
@@ -138,7 +142,7 @@ class _Activity2PageState extends State<Activity2Page> {
     int fishRow = rows - 1;
     int fishCol = cols - 1;
 
-    // Clear walls around cat (safe zone) - but don't overwrite fish
+    // Clear walls around cat (safe zone)
     for (var dr = -1; dr <= 1; dr++) {
       for (var dc = -1; dc <= 1; dc++) {
         int rr1 = catRow + dr;
@@ -160,7 +164,7 @@ class _Activity2PageState extends State<Activity2Page> {
       }
     }
 
-    // NOW place the fish AFTER clearing the safe zone
+    // Place the fish AFTER clearing the safe zone
     maze[fishRow][fishCol] = FISH;
 
     // Place dogs randomly, avoiding cat, fish, and their safe zones
@@ -173,7 +177,6 @@ class _Activity2PageState extends State<Activity2Page> {
         r = random.nextInt(rows);
         c = random.nextInt(cols);
         attempts++;
-        // Prevent infinite loop
         if (attempts > 100) break;
       } while (maze[r][c] != EMPTY ||
           (r <= 2 && c <= 2) || // Avoid cat safe zone
@@ -222,6 +225,10 @@ class _Activity2PageState extends State<Activity2Page> {
       generateMaze();
       startDogMovement();
     });
+    // Refocus after state change
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_focusNode);
+    });
   }
 
   void resetGame() {
@@ -232,6 +239,10 @@ class _Activity2PageState extends State<Activity2Page> {
       gameWin = false;
       generateMaze();
       startDogMovement();
+    });
+    // Refocus after state change
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_focusNode);
     });
   }
 
@@ -385,7 +396,7 @@ class _Activity2PageState extends State<Activity2Page> {
                           ),
                           child: Text(
                             gameWin ? "Next Level 💕" : "Play Again 💕",
-                            style: const TextStyle(fontSize: 18),
+                            style: const TextStyle(fontSize: 18, color: Colors.white),
                           ),
                         ),
                       ],
